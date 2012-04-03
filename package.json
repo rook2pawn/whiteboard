@@ -1,0 +1,13 @@
+{
+    "name" : "whiteboard",
+    "version": "0.0.1",
+    "description" : "multi-user whiteboard with dnode-ez",
+    "dependencies" : {
+        "browserify" : "",
+        "dnode-ez" : "",
+        "express" : "",
+        "formidable" : "",
+        "jquery-browserify" : "",
+        "optimist" : ""
+    }
+}
