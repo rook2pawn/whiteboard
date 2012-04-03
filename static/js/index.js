@@ -34,11 +34,7 @@ var myCanvas = function(canvas) {
     }
     ctx.putImageData(myImageData, 0, 0);
     var self = {};
-    var lastx = undefined;
-    var lasty = undefined;
     self.drawPixel = function(x,y) {
-        if (lastx == undefined) lastx = x;
-        if (lasty == undefined) lasty = y;
         var horiz = canvas.width*4;
         var pos = y*canvas.width*4 + x*4;
         myImageData.data[pos] = Math.floor(Math.random()*255);
