@@ -4,10 +4,7 @@ var browserify = require('browserify');
 var dnode_ez = require('dnode-ez');
 var webapp = express.createServer();
 webapp.use(express.static(__dirname + "/static"));
-webapp.use(browserify({
-    entry : __dirname + '/browser/whiteboard.js',
-    mount : '/js/whiteboard.js'
-}));
+webapp.use(browserify({entry : __dirname + '/browser/whiteboard.js', mount : '/js/whiteboard.js'}));
 webapp.listen(argv.p);
 var server = dnode_ez();
 server.listen(webapp);
