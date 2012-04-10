@@ -1,10 +1,18 @@
-var argv = require('optimist').usage('Whiteboard\nUsage: $0 -p [port]').demand(['p']).alias('p','port').describe('p','Port to start webserver on').argv;
+var argv = require('optimist').usage('Whiteboard\nUsage: $0 -p [port]').demand(['p']).alias('p','port').describe('p','Port to start webserver on').
+.alias('b','bouncy').describe('b','if enabled, uses bouncy settings').argv;
 var express = require('express');
 var browserify = require('browserify');
 var dnode_ez = require('dnode-ez');
 var webapp = express.createServer();
-webapp.use(express.static(__dirname + "/static"));
-webapp.use(browserify({entry : __dirname + '/browser/whiteboard.js', mount : '/js/whiteboard.js'}));
+
+
+if (argv.b) {
+    webapp.use('/whiteboard',express.static(__dirname + "/static"));
+    webapp.use(browserify({entry : __dirname + '/browser/whiteboard_bouncy.js', mount : '/whiteboard/js/whiteboard.js'}));
+} else {
+    webapp.use(express.static(__dirname + "/static"));
+    webapp.use(browserify({entry : __dirname + '/browser/whiteboard.js', mount : '/js/whiteboard.js'}));
+}
 webapp.listen(argv.p);
 var pixels = [];
 var server = dnode_ez();
