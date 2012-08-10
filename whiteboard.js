@@ -1,3 +1,5 @@
+var client = undefined;
+
 var mousemove = function(evt) {
     if (canvas.mouseDownInCanvas) {
         var canvasx = evt.pageX - canvas.canvasMinX;
@@ -10,6 +12,15 @@ var mousedown = function(evt) {
         canvas.mouseDownInCanvas = true;
     }
 }
+
+$(window).ready(function() {
+    client = require('dnode-ez')({update:function(pix) {pix.forEach(function(o){
+    whiteboard.drawPixel(o.x,o.y);
+})}});
+    client.on('drawCanvasPosition',function(x,y) { whiteboard.drawPixel(x,y);});
+    client.on('clearCanvas',function() { whiteboard.clear();});
+    client.connectWEB();
+});
 $('#clear').click(function() {
     client.emit('clear');
 });

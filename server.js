@@ -3,37 +3,25 @@ var argv = require('optimist')
     .demand(['p'])
     .alias('p','port')
     .describe('p','Port to start webserver on')
-    .alias('b','bouncy')
-    .describe('b','if enabled, uses bouncy settings').argv;
-var express = require('express');
-var browserify = require('browserify');
-var dnode_ez = require('dnode-ez');
-var webapp = express.createServer();
+    .argv;
 
+var http = require('http');
+var ecstatic = require('ecstatic')(__dirname + "/static");
+var ez = require('dnode-ez');
+var webapp = http.createServer(ecstatic);
 
-if (argv.b) {
-    console.log("Using bouncy settings");
-    webapp.use('/whiteboard',express.static(__dirname + "/static_bouncy"));
-    webapp.use(browserify({entry : __dirname + '/browser/whiteboard_bouncy.js', mount : '/whiteboard/js/whiteboard.js'}));
-} else {
-    console.log("Not using bouncy settings");
-    webapp.use(express.static(__dirname + "/static"));
-    webapp.use(browserify({entry : __dirname + '/browser/whiteboard.js', mount : '/js/whiteboard.js'}));
-}
 console.log("Listening on " + argv.p);
-webapp.listen(argv.p);
 var pixels = [];
-var server = dnode_ez();
-server.listen(webapp);
-server.on('relayCanvasPosition',function(x,y) {
-    server.emit('drawCanvasPosition',x,y);
+var server = ez();
+server.listenWEB(argv.p, webapp);
+server.on('relayCanvasPosition',function(x,y,remote,conn) {
+    remote.emit('drawCanvasPosition',x,y);
     pixels.push({x:x,y:y});
 });
 server.on('connect',function(remote,conn) {
-    console.log("Connect from " + conn.id);
     remote.update(pixels);
 });
-server.on('clear',function() {
-    server.emit('clearCanvas');
+server.on('clear',function(remote,conn) {
+    remote.emit('clearCanvas');
     pixels = [];
 });

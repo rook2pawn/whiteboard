@@ -6,3 +6,8 @@ Read about it at <a href="http://rook2pawn.com/post/view?post=6">Whiteboard @ ro
 And try it out at <a href="http://rook2pawn.com/whiteboard">rook2pawn.com/whiteboard</a>!
 
 It's very short code!
+
+Make
+====
+
+    browseriy whiteboard.js -o static/js/bundle.js
