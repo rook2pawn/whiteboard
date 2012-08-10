@@ -15,13 +15,13 @@ var pixels = [];
 var server = ez();
 server.listenWEB(argv.p, webapp);
 server.on('relayCanvasPosition',function(x,y,remote,conn) {
-    remote.emit('drawCanvasPosition',x,y);
+    server.emit('drawCanvasPosition',x,y);
     pixels.push({x:x,y:y});
 });
 server.on('connect',function(remote,conn) {
     remote.update(pixels);
 });
 server.on('clear',function(remote,conn) {
-    remote.emit('clearCanvas');
+    server.emit('clearCanvas');
     pixels = [];
 });

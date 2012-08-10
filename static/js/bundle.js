@@ -487,7 +487,19 @@ var ez = function(obj) {
     var utilEmitter = new EE;
     utilEmitter.on('emit',function() {
         var args = [].slice.call(arguments,0);
-        myRemote.emitter.apply(myRemote.emitter,args);
+        // myRemote is assigned if this is the scenario
+        // client connects, then the SERVER is assigned myRemote
+        // hence if myRemote is undefined, then we are assuming
+        // a server is emitting, and thus it applies to all clients
+        // i.e. server.emit('msg', "the system is shutting down");
+        if (myRemote !== undefined) {
+            myRemote.emitter.apply(myRemote.emitter,args);
+        } else {
+            Object.keys(clients).forEach(function(connid) {
+                var rem = clients[connid].remote;
+                rem.emitter.apply(rem.emitter, args);    
+            });
+        }
     });
     // this subscribes all the current clients to an existing server Event so clients
     // can fire onto the server ...
@@ -679,12 +691,9 @@ var ez = function(obj) {
 		return self;
 	};
 	self.on = function(name, fn) {
-        //console.log("SELF.ON " + name);
 		if (reservedEvents.indexOf(name) == -1) {
-            //console.log("ladoing up emitter on " + name);
 			emitter.on(name,fn);
 		} else {
-            //console.log("Loading up utilEmitter on " + name);
 			utilEmitter.on(name,fn);
 		}
 	};
